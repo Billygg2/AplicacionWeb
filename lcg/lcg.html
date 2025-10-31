@@ -1,0 +1,85 @@
+<div class="container">
+  <header class="header">
+    <h1>🔢 Generador de Números Aleatorios (LCG)</h1>
+    <p>Generador Congruencial Lineal: Xₖ₊₁ = (a × Xₖ + c) mod m</p>
+  </header>
+
+  <div class="controls-card">
+    <h2>⚙️ Parámetros LCG</h2>
+    
+    <div class="params-grid">
+      <div class="param-group">
+        <label>Semilla (X₀):</label>
+        <input type="number" [(ngModel)]="seed" min="0" step="1">
+        <small>0 ≤ semilla < módulo</small>
+      </div>
+
+      <div class="param-group">
+        <label>Multiplicador (a):</label>
+        <input type="number" [(ngModel)]="multiplier" step="1">
+      </div>
+
+      <div class="param-group">
+        <label>Incremento (c):</label>
+        <input type="number" [(ngModel)]="increment" step="1">
+      </div>
+
+      <div class="param-group">
+        <label>Módulo (m):</label>
+        <input type="number" [(ngModel)]="modulus" min="2" step="1">
+        <small>> 1</small>
+      </div>
+
+      <div class="param-group">
+        <label>Cantidad de números:</label>
+        <input type="number" [(ngModel)]="count" min="1" max="1000" step="1">
+        <small>> 100 requiere confirmación</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-generate" (click)="generateNumbers()">
+        🎲 Generar Números
+      </button>
+      <button class="btn-reset" (click)="reset()">
+        🔄 Reiniciar
+      </button>
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <div class="results-section" *ngIf="generatedNumbers.length > 0">
+    <div class="results-card">
+      <h2>📊 Resultados Generados</h2>
+      <div class="numbers-grid">
+        <div class="number-item" *ngFor="let item of getDisplayNumbers()">
+          <span class="index">#{{item.index}}</span>
+          <span class="value">{{item.normalized}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h2>📈 Diagrama de Dispersión</h2>
+      <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [xaxis]="chartOptions.xaxis"
+        [yaxis]="chartOptions.yaxis"
+        [colors]="chartOptions.colors"
+        [markers]="chartOptions.markers">
+      </apx-chart>
+    </div>
+  </div>
+
+  <div class="info-card" *ngIf="generatedNumbers.length === 0">
+    <h3>ℹ️ Instrucciones</h3>
+    <p>Configura los parámetros LCG y haz clic en "Generar Números" para comenzar.</p>
+    <ul>
+      <li><strong>Semilla (X₀):</strong> Valor inicial (0 ≤ semilla < módulo)</li>
+      <li><strong>Multiplicador (a):</strong> Factor multiplicativo</li>
+      <li><strong>Incremento (c):</strong> Constante aditiva</li>
+      <li><strong>Módulo (m):</strong> Módulo > 1</li>
+    </ul>
+  </div>
+</div>

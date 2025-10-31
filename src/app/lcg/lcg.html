@@ -1,0 +1,147 @@
+<div class="dashboard-wrap">
+  <!-- Sidebar -->
+  <aside class="sidebar" role="complementary" aria-label="Sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <div class="logo">🎲</div>
+        <div class="title">Generador LCG</div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <div class="sidebar-info">
+        <h4>📋 Información LCG</h4>
+        <div class="info-list">
+          <div class="info-item">
+            <strong>Fórmula X:</strong>
+            <span class="info-value">Xₙ₊₁ = (a×Xₙ + c) mod m</span>
+          </div>
+          <div class="info-item">
+            <strong>Fórmula r:</strong>
+            <span class="info-value">rₙ = Xₙ / (m - 1)</span>
+          </div>
+          <div class="info-item">
+            <strong>Números:</strong>
+            <span class="info-value">{{ generatedNumbers.length }}</span>
+          </div>
+          <div class="info-item">
+            <strong>Estado:</strong>
+            <span class="info-value" [class.success]="generatedNumbers.length > 0">
+              {{ generatedNumbers.length > 0 ? 'Activo' : 'Listo' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <small>Desarrollado por <strong>Billy Salmerón 🐾</strong></small>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main" role="main">
+    <div class="content-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>🎲 Generador de Números Aleatorios (LCG)</h1>
+          <p class="muted" *ngIf="generatedNumbers.length === 0">Configura los parámetros y genera números aleatorios
+          </p>
+          <p class="success" *ngIf="generatedNumbers.length > 0">
+            ✅ {{ generatedNumbers.length }} números generados • Semilla: {{ seed }}
+          </p>
+        </div>
+      </header>
+
+      <!-- Controles -->
+      <section class="controls-card card">
+        <div class="section-header">
+          <span class="icon">⚙️</span>
+          <h3>Parámetros LCG</h3>
+        </div>
+
+        <div class="params-grid">
+          <div class="param-group">
+            <label class="filter-label">Semilla (X₀):</label>
+            <input type="number" class="filter-select" [(ngModel)]="seed" min="0" step="1">
+            <small>0 ≤ semilla < módulo</small>
+          </div>
+
+          <div class="param-group">
+            <label class="filter-label">Multiplicador (a):</label>
+            <input type="number" class="filter-select" [(ngModel)]="multiplier" step="1">
+          </div>
+
+          <div class="param-group">
+            <label class="filter-label">Incremento (c):</label>
+            <input type="number" class="filter-select" [(ngModel)]="increment" step="1">
+          </div>
+
+          <div class="param-group">
+            <label class="filter-label">Módulo (m):</label>
+            <input type="number" class="filter-select" [(ngModel)]="modulus" min="2" step="1">
+            <small>> 1</small>
+          </div>
+
+          <div class="param-group">
+            <label class="filter-label">Cantidad:</label>
+            <input type="number" class="filter-select" [(ngModel)]="count" min="1" max="1000" step="1">
+            <small>> 100 requiere confirmación</small>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-generate" (click)="generateNumbers()">
+            🎲 Generar Números
+          </button>
+          <button class="btn-reset" (click)="reset()">
+            🔄 Reiniciar
+          </button>
+        </div>
+      </section>
+
+      <!-- Resultados -->
+      <section class="results-section" *ngIf="generatedNumbers.length > 0">
+        <div class="stats card">
+          <div class="section-header">
+            <span class="icon">📊</span>
+            <h3>Resultados Generados</h3>
+          </div>
+          <div class="numbers-grid">
+            <div class="number-item" *ngFor="let item of getDisplayNumbers()">
+              <span class="index">{{item.xIndex}}</span>
+              <span class="value">{{item.original}}</span>
+              <span class="index">{{item.rIndex}}</span>
+              <span class="value">{{item.normalized}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-container card">
+          <div class="chart-header">
+            <span class="icon">📈</span>
+            <h4 class="chart-title">Diagrama de Dispersión</h4>
+          </div>
+          <div class="chart-inner">
+            <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+              [yaxis]="chartOptions.yaxis" [colors]="chartOptions.colors" [markers]="chartOptions.markers">
+            </apx-chart>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mensaje inicial -->
+      <section class="no-data-section" *ngIf="generatedNumbers.length === 0">
+        <div class="no-data-card card">
+          <div class="no-data-content">
+            <span class="no-data-icon">🎲</span>
+            <h3>Esperando parámetros</h3>
+            <p>Configura los parámetros LCG y haz clic en "Generar Números" para comenzar.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
