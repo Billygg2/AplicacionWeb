@@ -1,15 +1,16 @@
+# 🎲 Generador de Números Aleatorios (LCG)
 
-# RandomGenerator
+Este proyecto fue generado con [Angular CLI](https://github.com/angular/angular-cli) versión 20.3.5.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
+## 🌐 Demo en Vivo
+**🔗 URL del Generador:** [https://random-generator.vercel.app](https://random-generator.vercel.app)
 
-## Development server
+## 🚀 Servidor de Desarrollo
 
-To start a local development server, run:
+Para iniciar un servidor de desarrollo local, ejecuta:
 
 ```bash
 ng serve
-```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
