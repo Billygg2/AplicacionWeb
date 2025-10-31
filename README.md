@@ -3,7 +3,7 @@
 Este proyecto fue generado con [Angular CLI](https://github.com/angular/angular-cli) versión 20.3.5.
 
 ## 🌐 Demo en Vivo
-**🔗 URL del Generador:** [https://random-generator.vercel.app](https://random-generator.vercel.app](https://aplicacion-2wfsa4tkj-billygg2s-projects.vercel.app/))
+**🔗 URL del Generador:** [https://random-generator.vercel.app](https://aplicacion-2wfsa4tkj-billygg2s-projects.vercel.app/))
 
 ## 🚀 Servidor de Desarrollo
 
