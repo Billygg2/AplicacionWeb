@@ -17,11 +17,12 @@ export class Lcg {
   modulus: number = 100;
   count: number = 4;
 
-  // Resultados
+  g: number = 0;  // Se calculará automáticamente
+  period: number = 0; // N = m
+
   generatedNumbers: number[] = [];
   normalizedNumbers: number[] = [];
 
-  // Configuración del gráfico
   chartOptions: any = {
     series: [{
       name: 'Números Aleatorios',
@@ -47,16 +48,13 @@ export class Lcg {
     }
   };
 
-  // Generar números aleatorios
   generateNumbers() {
-    // Validaciones
+
     if (!this.validateInputs()) return;
 
-    // Confirmación para más de 100 números
-    if (this.count > 100) {
-      const confirmed = confirm(`¿Estás seguro de generar ${this.count} números?`);
-      if (!confirmed) return;
-    }
+    // === Cálculo automático ===
+    this.g = Math.log2(this.modulus);
+    this.period = this.modulus; // N = m
 
     this.generatedNumbers = [];
     this.normalizedNumbers = [];
@@ -64,11 +62,8 @@ export class Lcg {
     let current = this.seed;
 
     for (let i = 0; i < this.count; i++) {
-      // LCG: Xₙ₊₁ = (a × Xₙ + c) mod m
       current = (this.multiplier * current + this.increment) % this.modulus;
-      //r = X / (m - 1)
       const normalized = current / (this.modulus - 1);
-
 
       this.generatedNumbers.push(current);
       this.normalizedNumbers.push(normalized);
@@ -77,38 +72,27 @@ export class Lcg {
     this.updateChart();
   }
 
-  // Validar entradas
   validateInputs(): boolean {
-    // Verificar que todos sean enteros
-    if (!Number.isInteger(this.seed) || !Number.isInteger(this.multiplier) ||
-      !Number.isInteger(this.increment) || !Number.isInteger(this.modulus) ||
-      !Number.isInteger(this.count)) {
-      alert('Todos los parámetros deben ser números enteros');
+    if (
+      this.seed <= 0 ||
+      this.multiplier <= 0 ||
+      this.increment <= 0 ||
+      this.modulus <= 1 ||
+      this.count <= 0
+    ) {
+      alert("Todos los parámetros deben ser mayores que 0.");
       return false;
     }
 
-    // Verificar módulo > 1
-    if (this.modulus <= 1) {
-      alert('El módulo debe ser mayor que 1');
-      return false;
-    }
-
-    // Verificar semilla en rango [0, módulo)
-    if (this.seed < 0 || this.seed >= this.modulus) {
-      alert(`La semilla debe estar en el rango: 0 ≤ semilla < ${this.modulus}`);
-      return false;
-    }
-
-    // Verificar count positivo
-    if (this.count <= 0) {
-      alert('La cantidad de números debe ser mayor que 0');
+    // Validar que m sea potencia de 2
+    if (Math.log2(this.modulus) % 1 !== 0) {
+      alert("El módulo (m) debe ser potencia de 2 (por ejemplo: 8, 16, 32, 64, 128).");
       return false;
     }
 
     return true;
   }
 
-  // Actualizar gráfico
   updateChart() {
     const scatterData = this.normalizedNumbers.map((value, index) => ({
       x: index + 1,
@@ -124,26 +108,24 @@ export class Lcg {
     };
   }
 
-  // Reiniciar todo
   reset() {
     this.seed = 37;
     this.multiplier = 19;
     this.increment = 33;
     this.modulus = 100;
     this.count = 4;
+    this.g = 0;
+    this.period = 0;
+
     this.generatedNumbers = [];
     this.normalizedNumbers = [];
 
     this.chartOptions = {
       ...this.chartOptions,
-      series: [{
-        name: 'Números Aleatorios',
-        data: []
-      }]
+      series: [{ name: 'Números Aleatorios', data: [] }]
     };
   }
 
-  // Obtener números para mostrar X y r
   getDisplayNumbers() {
     return this.normalizedNumbers.map((num, index) => ({
       xIndex: `X${index + 1}`,
