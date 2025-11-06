@@ -1,3 +1,11 @@
+# 🎲 Generador de Números Aleatorios (LCG)
+
+Este proyecto fue generado con [Angular CLI](https://github.com/angular/angular-cli) versión 20.3.5. ApexCharts
+
+## 🌐 Demo en Vivo
+**🔗 URL del Generador:** [https://random-generator.vercel.app](https://aplicacion-web-billy.vercel.app/)
+
+## 🚀 Servidor de Desarrollo
 
 # RandomGenerator
 
