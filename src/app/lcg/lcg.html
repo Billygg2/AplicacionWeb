@@ -84,11 +84,16 @@
             <input type="number" class="filter-select" [(ngModel)]="modulus" min="2" step="1">
             <small>> 1</small>
           </div>
+
           <div class="param-group">
             <label class="filter-label">g calculado:</label>
             <input type="number" class="filter-select" [value]="g" disabled>
           </div>
 
+          <div class="param-group">
+            <label class="filter-label">Tiempo de vida (N = 2^g):</label>
+            <input type="number" class="filter-select" [value]="period" disabled>
+          </div>
 
           <div class="param-group">
             <label class="filter-label">Cantidad:</label>
