@@ -6,22 +6,28 @@
         <div class="logo">🎲</div>
         <div class="title">Generador LCG</div>
       </div>
+
       <br><br><br><br><br>
+
       <div class="sidebar-info">
         <h4>📋 Fórmula LCG</h4>
+
         <div class="info-list">
           <div class="info-item">
             <strong>X:</strong>
             <span class="info-value">Xₙ₊₁ = (a×Xₙ + c) mod m</span>
           </div>
+
           <div class="info-item">
             <strong>r:</strong>
             <span class="info-value">rₙ = Xₙ / (m - 1)</span>
           </div>
+
           <div class="info-item">
             <strong>Números:</strong>
             <span class="info-value">{{ generatedNumbers.length }}</span>
           </div>
+
           <div class="info-item">
             <strong>Estado:</strong>
             <span class="info-value" [class.success]="generatedNumbers.length > 0">
@@ -37,20 +43,26 @@
     </div>
   </aside>
 
-  <!-- Contenido principal -->
+  <!-- MAIN -->
   <main class="main">
     <div class="content-wrapper">
+
+      <!-- Top bar -->
       <header class="topbar">
         <div class="topbar-left">
           <h1>🎲 Generador de Números Aleatorios (LCG)</h1>
-          <p class="muted" *ngIf="generatedNumbers.length === 0">Configura los parámetros y genera números aleatorios</p>
+
+          <p class="muted" *ngIf="generatedNumbers.length === 0">
+            Configura los parámetros y genera números aleatorios
+          </p>
+
           <p class="success" *ngIf="generatedNumbers.length > 0">
             ✅ {{ generatedNumbers.length }} números generados • Semilla: {{ seed }}
           </p>
         </div>
       </header>
 
-      <!-- Controles -->
+      <!-- Parámetros -->
       <section class="controls-card card">
         <div class="section-header">
           <span class="icon">⚙️</span>
@@ -59,45 +71,48 @@
 
         <div class="params-grid">
           <div class="param-group">
-            <label class="filter-label">Semilla (X₀):</label>
-            <input type="number" class="filter-select" [(ngModel)]="seed" min="0" step="1">
-            <small>0 ≤ semilla < módulo</small>
+            <label>Semilla (X₀):</label>
+            <input type="number" [(ngModel)]="seed">
+            <small>0 ≤ semilla &lt; módulo</small>
           </div>
 
           <div class="param-group">
-            <label class="filter-label">Multiplicador (a):</label>
-            <input type="number" class="filter-select" [(ngModel)]="multiplier" step="1">
+            <label>Multiplicador (a):</label>
+            <input type="number" [(ngModel)]="multiplier">
           </div>
 
           <div class="param-group">
-            <label class="filter-label">Incremento (c):</label>
-            <input type="number" class="filter-select" [(ngModel)]="increment" step="1">
+            <label>Incremento (c):</label>
+            <input type="number" [(ngModel)]="increment">
           </div>
 
           <div class="param-group">
-            <label class="filter-label">Módulo (N = 2^g):</label>
-            <input type="number" class="filter-select" [value]="period" disabled>
+            <label>Módulo (m = 2^g):</label>
+            <input type="number" [value]="period" disabled>
           </div>
 
           <div class="param-group">
-            <label class="filter-label">Cantidad:</label>
-            <input type="number" class="filter-select" [(ngModel)]="count" min="1" max="1000" step="1">
+            <label>Cantidad:</label>
+            <input type="number" [(ngModel)]="count" min="1" max="1000">
           </div>
         </div>
 
         <div class="actions">
-          <button class="btn-generate" (click)="generateNumbers()">🎲 Generar Números</button>
+          <button class="btn-generate" (click)="generateNumbers()">🎲 Generar</button>
           <button class="btn-reset" (click)="reset()">🔄 Reiniciar</button>
         </div>
       </section>
 
-      <!-- Resultados -->
+      <!-- RESULTADOS -->
       <section class="results-section" *ngIf="generatedNumbers.length > 0">
+
+        <!-- Números -->
         <div class="stats card">
           <div class="section-header">
             <span class="icon">📊</span>
             <h3>Resultados Generados</h3>
           </div>
+
           <div class="numbers-grid">
             <div class="number-item" *ngFor="let item of getDisplayNumbers()">
               <span class="index">{{item.xIndex}}</span>
@@ -108,20 +123,28 @@
           </div>
         </div>
 
+        <!-- Scatter -->
         <div class="chart-container card">
           <div class="chart-header">
             <span class="icon">📈</span>
             <h4 class="chart-title">Diagrama de Dispersión</h4>
           </div>
+
           <div class="chart-inner">
-            <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
-              [yaxis]="chartOptions.yaxis" [colors]="chartOptions.colors" [markers]="chartOptions.markers">
+            <apx-chart 
+              [series]="chartOptions.series"
+              [chart]="chartOptions.chart"
+              [xaxis]="chartOptions.xaxis"
+              [yaxis]="chartOptions.yaxis"
+              [colors]="chartOptions.colors"
+              [markers]="chartOptions.markers">
             </apx-chart>
           </div>
         </div>
+
       </section>
 
-      <!-- Pruebas de Validación -->
+      <!-- PRUEBAS DE VALIDACIÓN -->
       <section class="card uniformity-tests" *ngIf="generatedNumbers.length > 0">
         <div class="section-header">
           <span class="icon">📌</span>
@@ -129,70 +152,110 @@
         </div>
 
         <div class="test-results">
+
+          <!-- Media -->
           <div class="test-item" [class.passed]="meanTest.passed" [class.failed]="!meanTest.passed">
-            <h4>📊 Prueba de Uniformidad - Media</h4>
+            <h4>📊 Prueba de Media</h4>
             <div class="test-details">
               <div><strong>Valor calculado:</strong> {{ meanTest.calculatedValue | number:'1.4-4' }}</div>
               <div><strong>Límite inferior:</strong> {{ meanTest.lowerLimit | number:'1.4-4' }}</div>
               <div><strong>Límite superior:</strong> {{ meanTest.upperLimit | number:'1.4-4' }}</div>
-              <div><strong>Resultado:</strong> 
-                <span [class.text-success]="meanTest.passed" [class.text-danger]="!meanTest.passed">
+              <div>
+                <strong>Resultado:</strong>
+                <span [class.text-success]="meanTest.passed" 
+                      [class.text-danger]="!meanTest.passed">
                   {{ meanTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
                 </span>
               </div>
             </div>
           </div>
 
+          <!-- Varianza -->
           <div class="test-item" [class.passed]="varianceTest.passed" [class.failed]="!varianceTest.passed">
-            <h4>📈 Prueba de Uniformidad - Varianza</h4>
+            <h4>📈 Prueba de Varianza</h4>
             <div class="test-details">
               <div><strong>Valor calculado:</strong> {{ varianceTest.calculatedValue | number:'1.4-4' }}</div>
               <div><strong>Límite inferior:</strong> {{ varianceTest.lowerLimit | number:'1.4-4' }}</div>
               <div><strong>Límite superior:</strong> {{ varianceTest.upperLimit | number:'1.4-4' }}</div>
-              <div><strong>Resultado:</strong> 
-                <span [class.text-success]="varianceTest.passed" [class.text-danger]="!varianceTest.passed">
+              <div>
+                <strong>Resultado:</strong>
+                <span [class.text-success]="varianceTest.passed" 
+                      [class.text-danger]="!varianceTest.passed">
                   {{ varianceTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
                 </span>
               </div>
             </div>
           </div>
 
+          <!-- Corridas Arriba-Abajo -->
           <div class="test-item" [class.passed]="correlationTest.passed" [class.failed]="!correlationTest.passed">
-            <h4>🔗 Prueba de Independencia - Correlación</h4>
+            <h4>🔗 Prueba de Independencia - Corridas Arriba/Abajo</h4>
             <div class="test-details">
-              <div><strong>Valor calculado:</strong> {{ correlationTest.calculatedValue | number:'1.4-4' }}</div>
+              <div><strong>Z₀:</strong> {{ correlationTest.calculatedValue | number:'1.4-4' }}</div>
               <div><strong>Límite inferior:</strong> {{ correlationTest.lowerLimit | number:'1.4-4' }}</div>
               <div><strong>Límite superior:</strong> {{ correlationTest.upperLimit | number:'1.4-4' }}</div>
-              <div><strong>Resultado:</strong> 
-                <span [class.text-success]="correlationTest.passed" [class.text-danger]="!correlationTest.passed">
+
+              <div>
+                <strong>Resultado:</strong>
+                <span [class.text-success]="correlationTest.passed" 
+                      [class.text-danger]="!correlationTest.passed">
                   {{ correlationTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
                 </span>
               </div>
             </div>
           </div>
+
+          <!-- Chi cuadrado -->
+          <div class="test-item" [class.passed]="chiSquareTest.passed" [class.failed]="!chiSquareTest.passed">
+            <h4>🧪 Prueba de Uniformidad - Chi-Cuadrado</h4>
+            <div class="test-details">
+              <div><strong>Valor calculado:</strong> {{ chiSquareTest.calculatedValue | number:'1.4-4' }}</div>
+              <div><strong>Límite inferior:</strong> {{ chiSquareTest.lowerLimit | number:'1.4-4' }}</div>
+              <div><strong>Límite superior:</strong> {{ chiSquareTest.upperLimit | number:'1.4-4' }}</div>
+
+              <div>
+                <strong>Resultado:</strong>
+                <span [class.text-success]="chiSquareTest.passed" 
+                      [class.text-danger]="!chiSquareTest.passed">
+                  {{ chiSquareTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <div class="validation-final" [class.passed]="validationApproved" [class.failed]="!validationApproved">
-          <h3 *ngIf="validationApproved === true" class="text-success">✅ Los números PASAN todas las pruebas de validación</h3>
-          <h3 *ngIf="validationApproved === false" class="text-danger">❌ Los números NO pasan las pruebas de validación</h3>
+        <!-- Resultado final -->
+        <div class="validation-final" 
+             [class.passed]="validationApproved" 
+             [class.failed]="!validationApproved">
+
+          <h3 *ngIf="validationApproved">✅ Los números PASAN todas las pruebas</h3>
+          <h3 *ngIf="validationApproved === false">❌ Los números NO pasan las pruebas</h3>
+
         </div>
 
+        <!-- Regenerar -->
         <div class="regenerate-section" *ngIf="validationApproved === false">
-          <button class="btn-regenerate" (click)="regenerate()">🔁 Regenerar Números</button>
-          <p class="regenerate-hint">Los números no cumplen con las pruebas de validación. Puedes regenerarlos con los mismos parámetros.</p>
+          <button class="btn-regenerate" (click)="regenerate()">🔁 Regenerar</button>
+          <p class="regenerate-hint">
+            Los números no cumplen las pruebas. Puedes regenerarlos con nuevos parámetros.
+          </p>
         </div>
+
       </section>
 
-      <!-- Mensaje inicial -->
+      <!-- Vista inicial si no hay datos -->
       <section class="no-data-section" *ngIf="generatedNumbers.length === 0">
         <div class="no-data-card card">
           <div class="no-data-content">
             <span class="no-data-icon">🎲</span>
             <h3>Esperando parámetros</h3>
-            <p>Configura los parámetros LCG y haz clic en "Generar Números" para comenzar.</p>
+            <p>Configura los parámetros y presiona "Generar".</p>
           </div>
         </div>
       </section>
+
     </div>
   </main>
 </div>
