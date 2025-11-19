@@ -8,6 +8,7 @@ interface ValidationTest {
   lowerLimit: number;
   upperLimit: number;
   passed: boolean;
+  runs?: number;
 }
 
 @Component({
@@ -101,13 +102,25 @@ export class Lcg {
 
     // 2) Prueba de Varianza
     const varianza = r.reduce((sum, v) => sum + Math.pow(v - media, 2), 0) / (n - 1);
-    const var_esp = 1 / 12;
+    const var_esp = 1 / 12;  // 0.08333
 
-    const Z = 1.96;
-    const sigma_var = Math.sqrt((2 * Math.pow(var_esp, 2)) / (n - 1));
+    const alpha = 0.05;
+    const gl = n - 1;
+    const z = 1.96;
 
-    const LI_var = var_esp - Z * sigma_var;
-    const LS_var = var_esp + Z * sigma_var;
+    // Aproximación Chi-cuadrado Wilson–Hilferty
+    function chiAprox(p: number) {
+      const t = 1 - (2 / (9 * gl)) + (Math.sqrt(2 / (9 * gl)) * p);
+      return gl * Math.pow(t, 3);
+    }
+
+    // χ²(α/2)
+    const chi_sup = chiAprox(1.96); // χ²(0.025)
+    // χ²((1−α)/2)
+    const chi_inf = chiAprox(-1.96); // χ²(0.975)
+
+    const LI_var = chi_inf / (12 * gl);
+    const LS_var = chi_sup / (12 * gl);
 
     const varOK = varianza >= LI_var && varianza <= LS_var;
 
@@ -126,8 +139,10 @@ export class Lcg {
       calculatedValue: corridasResult.Z0,
       lowerLimit: -1.96,
       upperLimit: 1.96,
-      passed: corridasOK
+      passed: corridasOK,
+      runs: corridasResult.runs
     };
+
 
     // 4) Prueba de Chi-Cuadrado
     const chi = this.pruebaChiCuadrado(r);
@@ -168,44 +183,82 @@ export class Lcg {
 
     const passed = Z0 <= 1.96;
 
-    return { Z0, passed };
+    return { Z0, passed, runs: C0 };
+
   }
 
 
   // PRUEBA DE UNIFORMIDAD: CHI CUADRADO
   pruebaChiCuadrado(r: number[]) {
-    const n = r.length;
-    const k = Math.floor(Math.sqrt(n));
-    const interval = 1 / k;
 
+    const n = r.length;
+
+    // m = número de intervalos = √n
+    const k = Math.floor(Math.sqrt(n));
+
+    // Crear intervalos del mismo tamaño
+    const intervalSize = 1 / k;
+
+    // Frecuencias observadas Oi
     let O = new Array(k).fill(0);
 
     r.forEach(v => {
-      const index = Math.min(Math.floor(v / interval), k - 1);
+      const index = Math.min(Math.floor(v / intervalSize), k - 1);
       O[index]++;
     });
 
+    // Frecuencia esperada Ei = n/m
     const E = n / k;
-    let chiCalc = 0;
 
+    // Cálculo del estadístico Chi-cuadrado
+    let chiCalc = 0;
     for (let i = 0; i < k; i++) {
       chiCalc += Math.pow(O[i] - E, 2) / E;
     }
 
+    // VALOR CRÍTICO DE TABLA
     const gl = k - 1;
 
-    const chiInf = gl - 1.96 * Math.sqrt(2 * gl);
-    const chiSup = gl + 1.96 * Math.sqrt(2 * gl);
+    // Tabla mínima
+    const chiTable: { [key: number]: number } = {
+      1: 3.841,
+      2: 5.991,
+      3: 7.815,
+      4: 9.488,
+      5: 11.070,
+      6: 12.592,
+      7: 14.067,
+      8: 15.507,
+      9: 16.919,
+      10: 18.307,
+      11: 19.675,
+      12: 21.026,
+      13: 22.362,
+      14: 23.685,
+      15: 24.996,
+      16: 26.296,
+      17: 27.587,
+      18: 28.869,
+      19: 30.144,
+      20: 31.410,
+      25: 37.652,
+      30: 43.773
+    };
 
-    const passed = chiCalc >= chiInf && chiCalc <= chiSup;
+    // Si gl no está en la tabla, aproximamos linealmente
+    const chiCritical = chiTable[gl] ?? (gl + 2 * Math.sqrt(gl));
+
+    // Decisión
+    const passed = chiCalc < chiCritical;
 
     return {
       value: chiCalc,
-      lowerLimit: chiInf,
-      upperLimit: chiSup,
+      lowerLimit: 0,
+      upperLimit: chiCritical,
       passed
     };
   }
+
 
   // REGENERAR NÚMEROS (si fallan las pruebas)
   regenerate() {

@@ -131,13 +131,8 @@
           </div>
 
           <div class="chart-inner">
-            <apx-chart 
-              [series]="chartOptions.series"
-              [chart]="chartOptions.chart"
-              [xaxis]="chartOptions.xaxis"
-              [yaxis]="chartOptions.yaxis"
-              [colors]="chartOptions.colors"
-              [markers]="chartOptions.markers">
+            <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+              [yaxis]="chartOptions.yaxis" [colors]="chartOptions.colors" [markers]="chartOptions.markers">
             </apx-chart>
           </div>
         </div>
@@ -146,101 +141,101 @@
 
       <!-- PRUEBAS DE VALIDACIÓN -->
       <section class="card uniformity-tests" *ngIf="generatedNumbers.length > 0">
+
         <div class="section-header">
           <span class="icon">📌</span>
-          <h3>Pruebas de Validación</h3>
+          <h3>Pruebas Estadísticas del Generador LCG (95% de confianza)</h3>
         </div>
-
         <div class="test-results">
 
-          <!-- Media -->
+          <!-- MEDIA -->
           <div class="test-item" [class.passed]="meanTest.passed" [class.failed]="!meanTest.passed">
             <h4>📊 Prueba de Media</h4>
+            <p class="test-explanation">
+              Verifica si el promedio de los números generados se mantiene cerca del valor esperado para una
+              distribución uniforme.
+              La prueba es válida si la media cae dentro del rango permitido para el nivel de confianza.
+            </p>
             <div class="test-details">
-              <div><strong>Valor calculado:</strong> {{ meanTest.calculatedValue | number:'1.4-4' }}</div>
+              <div><strong>Media calculada:</strong> {{ meanTest.calculatedValue | number:'1.4-4' }}</div>
               <div><strong>Límite inferior:</strong> {{ meanTest.lowerLimit | number:'1.4-4' }}</div>
               <div><strong>Límite superior:</strong> {{ meanTest.upperLimit | number:'1.4-4' }}</div>
               <div>
                 <strong>Resultado:</strong>
-                <span [class.text-success]="meanTest.passed" 
-                      [class.text-danger]="!meanTest.passed">
+                <span [class.text-success]="meanTest.passed" [class.text-danger]="!meanTest.passed">
                   {{ meanTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
                 </span>
               </div>
             </div>
           </div>
 
-          <!-- Varianza -->
+          <!-- VARIANZA -->
           <div class="test-item" [class.passed]="varianceTest.passed" [class.failed]="!varianceTest.passed">
             <h4>📈 Prueba de Varianza</h4>
+            <p class="test-explanation">
+              Evalúa si la dispersión de los números corresponde a la de una distribución uniforme.
+              La prueba es válida cuando la varianza calculada se encuentra dentro del intervalo aceptado.
+            </p>
             <div class="test-details">
-              <div><strong>Valor calculado:</strong> {{ varianceTest.calculatedValue | number:'1.4-4' }}</div>
+              <div><strong>Varianza calculada:</strong> {{ varianceTest.calculatedValue | number:'1.4-4' }}</div>
               <div><strong>Límite inferior:</strong> {{ varianceTest.lowerLimit | number:'1.4-4' }}</div>
               <div><strong>Límite superior:</strong> {{ varianceTest.upperLimit | number:'1.4-4' }}</div>
               <div>
                 <strong>Resultado:</strong>
-                <span [class.text-success]="varianceTest.passed" 
-                      [class.text-danger]="!varianceTest.passed">
+                <span [class.text-success]="varianceTest.passed" [class.text-danger]="!varianceTest.passed">
                   {{ varianceTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
                 </span>
               </div>
             </div>
           </div>
 
-          <!-- Corridas Arriba-Abajo -->
-          <div class="test-item" [class.passed]="correlationTest.passed" [class.failed]="!correlationTest.passed">
-            <h4>🔗 Prueba de Independencia - Corridas Arriba/Abajo</h4>
-            <div class="test-details">
-              <div><strong>Z₀:</strong> {{ correlationTest.calculatedValue | number:'1.4-4' }}</div>
-              <div><strong>Límite inferior:</strong> {{ correlationTest.lowerLimit | number:'1.4-4' }}</div>
-              <div><strong>Límite superior:</strong> {{ correlationTest.upperLimit | number:'1.4-4' }}</div>
-
-              <div>
-                <strong>Resultado:</strong>
-                <span [class.text-success]="correlationTest.passed" 
-                      [class.text-danger]="!correlationTest.passed">
-                  {{ correlationTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Chi cuadrado -->
+          <!-- CHI CUADRADO -->
           <div class="test-item" [class.passed]="chiSquareTest.passed" [class.failed]="!chiSquareTest.passed">
-            <h4>🧪 Prueba de Uniformidad - Chi-Cuadrado</h4>
+            <h4>🧪 Prueba de Uniformidad - Chi Cuadrado</h4>
+            <p class="test-explanation">
+              Verifica si la cantidad de números que caen en cada intervalo es proporcional a lo esperado en una
+              distribución uniforme.
+              La prueba es válida cuando el valor calculado es menor que el valor crítico correspondiente.
+            </p>
             <div class="test-details">
-              <div><strong>Valor calculado:</strong> {{ chiSquareTest.calculatedValue | number:'1.4-4' }}</div>
-              <div><strong>Límite inferior:</strong> {{ chiSquareTest.lowerLimit | number:'1.4-4' }}</div>
-              <div><strong>Límite superior:</strong> {{ chiSquareTest.upperLimit | number:'1.4-4' }}</div>
-
+              <div><strong>Chi calculado (χ²):</strong> {{ chiSquareTest.calculatedValue | number:'1.4-4' }}</div>
+              <div><strong>Límite crítico:</strong> {{ chiSquareTest.upperLimit | number:'1.4-4' }}</div>
               <div>
                 <strong>Resultado:</strong>
-                <span [class.text-success]="chiSquareTest.passed" 
-                      [class.text-danger]="!chiSquareTest.passed">
+                <span [class.text-success]="chiSquareTest.passed" [class.text-danger]="!chiSquareTest.passed">
                   {{ chiSquareTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
                 </span>
               </div>
             </div>
           </div>
 
+          <!-- CORRIDAS ARRIBA/ABAJO -->
+          <div class="test-item" [class.passed]="correlationTest.passed" [class.failed]="!correlationTest.passed">
+            <h4>🔗 Prueba de Independencia - Corridas Arriba/Abajo</h4>
+            <p class="test-explanation">
+              Determina si la secuencia sube y baja de manera aleatoria, sin patrones repetitivos.
+              La prueba es válida si el estadístico Z₀ se mantiene dentro del rango crítico permitido.
+            </p>
+            <div class="test-details">
+              <div><strong>Z₀ calculado:</strong> {{ correlationTest.calculatedValue | number:'1.4-4' }}</div>
+              <div><strong>Límite crítico::</strong> {{ correlationTest.upperLimit | number:'1.4-4' }}</div>
+              <div><strong>Corridas observadas:</strong> {{ correlationTest.runs }}</div>
+              <div>
+                <strong>Resultado:</strong>
+                <span [class.text-success]="correlationTest.passed" [class.text-danger]="!correlationTest.passed">
+                  {{ correlationTest.passed ? '✅ APRUEBA' : '❌ NO APRUEBA' }}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Resultado final -->
-        <div class="validation-final" 
-             [class.passed]="validationApproved" 
-             [class.failed]="!validationApproved">
-
-          <h3 *ngIf="validationApproved">✅ Los números PASAN todas las pruebas</h3>
-          <h3 *ngIf="validationApproved === false">❌ Los números NO pasan las pruebas</h3>
-
+        <div class="validation-final" [class.passed]="validationApproved" [class.failed]="!validationApproved">
+          <h3 *ngIf="validationApproved">🎉 Todos los tests fueron aprobados</h3>
+          <h3 *ngIf="validationApproved === false">⚠️ Los números NO pasan todas las pruebas</h3>
         </div>
-
-        <!-- Regenerar -->
         <div class="regenerate-section" *ngIf="validationApproved === false">
-          <button class="btn-regenerate" (click)="regenerate()">🔁 Regenerar</button>
-          <p class="regenerate-hint">
-            Los números no cumplen las pruebas. Puedes regenerarlos con nuevos parámetros.
-          </p>
+          <button class="btn-regenerate" (click)="regenerate()">🔁 Probar con otros parámetros</button>
         </div>
 
       </section>
